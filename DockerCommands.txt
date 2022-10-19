@@ -1,0 +1,29 @@
+// Build image (-t for tag)
+docker build -t any-image-name .
+
+// Create bridge network
+docker network create --driver bridge yelp-net
+
+// Start MongoDB server
+docker run -d --name mongo-server --network yelp-net -p "27017:27017" -e "MONGO_INITDB_ROOT_USERNAME=root" -e "MONGO_INITDB_ROOT_PASSWORD=rootpass" -e "MONGO_INITDB_DATABASE=yelp" mongo:latest
+
+// Run MongoDB shell
+docker run --rm -it --network yelp-net mongo:latest mongo --host mongo-server --username root --password rootpass --authenticationDatabase admin
+
+// Create, name, map ports (host:container), and run container from image in detached mode
+docker run -d --name assignment2_api --network yelp-net -p "8000:8000" -e "MONGO_HOST=localhost" -e "MONGO_USER=yelp" -e "MONGO_PASSWORD=pass" -e "MONGO_DB_NAME=yelp" assignment2_api
+
+// Stop container
+docker stop assignment-1
+
+// Start stopped container
+docker start mongo-server
+
+// Remove container
+docker rm assignment-1
+
+// Launch application according to compose specification
+docker-compose up
+
+// Force rebuild
+docker-compose up --build

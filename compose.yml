@@ -1,0 +1,56 @@
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: hunter2
+
+  # dbz:
+  #   image: mongo
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+  #     MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+
+  # dbz-init:
+  #   build: .
+  #   environment:
+  #     MONGO_HOST: dbz
+  #     MONGO_USER: ${MONGO_ROOT_USER}
+  #     MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
+  #     MONGO_DB_NAME: ${MONGO_DB_NAME}
+  #     MONGO_AUTH_DB_NAME: admin
+  #     MONGO_CREATE_USER: ${MONGO_USER}
+  #     MONGO_CREATE_PASSWORD: ${MONGO_PASSWORD}
+  #   depends_on:
+  #     - dbz
+  #   restart: on-failure
+  #   command: npm run initdb
+
+  redis:
+    image: redis:latest
+    restart: on-failure
+
+  api:
+    build: .
+    ports:
+      - 8000:8000
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB_NAME: ${MYSQL_DB_NAME}
+    #  MONGO_HOST: dbz
+    #  MONGO_USER: ${MONGO_USER}
+    #  MONGO_PASSWORD: ${MONGO_PASSWORD}
+    #  MONGO_DB_NAME: ${MONGO_DB_NAME}
+      REDIS_HOST: redis
+    depends_on:
+      - db
+    #  - dbz
+      - dbz-init
+      - redis
+    restart: on-failure
+

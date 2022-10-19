@@ -1,0 +1,70 @@
+docker-compose up
+
+For requests made without a valid authentication token, our API permits 10 requests/minutes.
+
+For requests made with a valid authentication token, our API permits 30 requests/minutes.
+
+docker run -d --name redis-server -p 6379:6379 redis:latest
+
+
+
+  redis:
+    ports:
+        - 6379:6379
+    image: redis:latest
+    restart: on-failure
+
+REDIS_HOST=redis
+
+----
+
+ GET /courses/{id}/roster
+
+Course roster download – this action, implemented by the GET /courses/{id}/roster endpoint,
+allows certain authorized users to download a CSV-formatted roster for a specific course.
+The roster will contain a list of the students currently enrolled in the course, in CSV format, e.g.:
+
+"abc123","Leia Organa","organal@oregonstate.edu"
+"def456","Luke Skywalker","skywallu@oregonstate.edu"
+...
+-----
+GET /courses and GET /courses/{id} endpoints,
+
+Course information fetching – this action, implemented by the GET /courses and GET /courses/{id} endpoints,
+allows users to see information about all Courses or about a specific Course.
+
+Note that the information included by both of these endpoints should not return information about a Course’s enrolled students or its Assignments.
+Instead, that information can be fetched by the GET /courses/{id}/students and GET /courses/{id}/assignments endpoints, respectively.
+
+----
+A few of the Tarpaulin API endpoints must be paginated:
+GET /courses
+
+
+console.log("== req.body ", req.body)
+    const courseId = req.params.courseId
+
+    if(req.body.add){
+      for (var i = 0; i < req.body.add.length; ++i){
+        console.log("== req.body.add ", req.body.add[i])
+        student = await User.findAll({where: {id: req.body.add[i]}})
+        console.log("== student ", student)
+        // check courses
+        if(student.length > 0){
+          courses = student.courseId.split(',')
+          // add
+          if(!courses.find(element => element == courseId)){
+            courses = courses.join() + courseId
+            console.log("== courses ", courses)
+            await User.update({courseId: courses}, {where:{id: req.body.add[i]}})
+          }
+        }
+      }
+    }
+    if(req.body.remove){
+      for (var i = 0; i < req.body.remove.length; ++i){
+        console.log("== req.body.remove ", req.body.remove[i])
+      }
+
+    }
+    next()
