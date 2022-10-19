@@ -2,3 +2,4 @@ Team 33's final project for the Spring 2022 Cloud Application Development course
 
 Tarpaulin API is a complete RESTful API for an application called Tarpaulin, a lightweight course management tool that’s an “alternative” to Canvas.
 Our API supports all of the endpoints described in the given [Tarpaulin OpenAPI specification](https://gist.github.com/robwhess/ec734c97a98868dbc1776718cd73b203).
+Our project includes pagination, standard JWT-based authorization, rate limiting, and Docker containerization where the services we used to power our API (MongoDB and Redis) are run in Docker containers.
